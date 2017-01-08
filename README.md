@@ -150,37 +150,6 @@ cp Build/OvmfX64/DEBUG_GCC*/FV/OVMF.fd /home/vm/
 
 
 
-#### Network bridging (Work in progress)
-
-```
-auto br0
-iface br0 inet static
-	address 151.80.227.72
-	netmask 255.255.255.0
-	network 151.80.227.0
-	broadcast 151.80.227.255
-	gateway 151.80.227.254
-        dns-nameservers 127.0.0.1 213.186.33.99
-        dns-search ovh.net
-        bridge_ports eth0
-        bridge_stp off
-        bridge_fd 0
-        bridge_maxwait 0
-#	post-up ip tuntap add tap0 mode tap user root
-# 	post-up ip link set tap0 up
-#	post-up sleep 0.5s
-#	post-up ip link set tap0 master br0
-#	post-down brctl delif br0 tap0
-#	post-down brctl delbr br0
-```
-
-```
-# ip tuntap add tap0 mode tap user root
-# ip link set tap0 up
-# ip link set tap0 master br0
-```
-
-
 ## II. First VM boot
 
 `# sh vm.sh 1`
@@ -204,6 +173,10 @@ During Windows installation, load viostor and NetKVM drivers from virtio-win CD 
 ![Image](doc/wininst_virtio.png?raw=true)
 
 After windows restart, you can activate RDP and connect via rdp://SERVERIP:4001
+
+
+
+
 
 
 
