@@ -1,18 +1,17 @@
 #!/bin/bash
 
-
 PCIID_GPU_LIST=(02:00.0 03:00.0 81:00.0)
 PCIID_SND_LIST=(02:00.1 03:00.1 81:00.1)
 
 usage() {
-        echo "$0 VM_ID"
-        exit 1;
+    echo "$0 VM_ID"
+    exit 1;
 }
 
 VM_ID=$1
 if ! [[ $VM_ID =~ ^[0-9]+$ ]]
 then
-        usage
+    usage
 fi
 
 
@@ -30,6 +29,7 @@ EFI="/home/vm/$VM_ID/OVMF_VARS.fd"
 
 # https://www.microsoft.com/fr-fr/software-download/windows10ISO
 ISO_WIN="/home/vm/Win10_1607_x64.iso"
+BOOT_ON_CD=0
 # https://fedoraproject.org/wiki/Windows_Virtio_Drivers
 ISO_VIRTIO="/home/vm/virtio-win.iso"
 
@@ -51,24 +51,25 @@ OVMF="/home/vm/OVMF.fd"
 
 mkdir -p $DIR
 if [ ! -e $VM ]; then
-	qemu-img create -f qcow2 $VM 60G
+    qemu-img create -f qcow2 $VM 60G
+    BOOT_ON_CD=1
 fi
 if [ ! -e $EFI ]; then
-	cp $OVMF $EFI
+    cp $OVMF $EFI
 fi
 
 
 vfiobind() {
     dev="$1"
-        vendor=$(cat /sys/bus/pci/devices/$dev/vendor)
-        device=$(cat /sys/bus/pci/devices/$dev/device)
-        if [ -e /sys/bus/pci/devices/$dev/driver ]; then
-                echo $dev > /sys/bus/pci/devices/$dev/driver/unbind
-        fi
-        echo $vendor $device > /sys/bus/pci/drivers/vfio-pci/new_id
+    vendor=$(cat /sys/bus/pci/devices/$dev/vendor)
+    device=$(cat /sys/bus/pci/devices/$dev/device)
+    if [ -e /sys/bus/pci/devices/$dev/driver ]; then
+        sudo sh -c "echo $dev > /sys/bus/pci/devices/$dev/driver/unbind"
+    fi
+    sudo sh -c "echo $vendor $device > /sys/bus/pci/drivers/vfio-pci/new_id"
 }
 
-modprobe vfio-pci
+sudo modprobe vfio-pci
 vfiobind "0000:$PCIID_GPU"
 vfiobind "0000:$PCIID_SND"
 NUMA_MODE=$( cat /sys/bus/pci/devices/0000:${PCIID_GPU}/numa_node )
@@ -78,7 +79,7 @@ OPTS=""
 
 # Basic CPU settings.
 OPTS="$OPTS -cpu host,kvm=off"
-OPTS="$OPTS -smp 8,sockets=1,cores=4,threads=2"
+OPTS="$OPTS -smp 4,sockets=1,cores=2,threads=2"
 
 # ICH9 emulation for better support of PCI-E passthrough
 #OPTS="$OPTS -machine type=q35,accel=kvm"
@@ -88,7 +89,7 @@ OPTS="$OPTS -smp 8,sockets=1,cores=4,threads=2"
 OPTS="$OPTS -enable-kvm"
 
 # Assign memory to the vm.
-OPTS="$OPTS -m 16G"
+OPTS="$OPTS -m 8G"
 
 # VFIO GPU and GPU sound passthrough.
 #OPTS="$OPTS -device vfio-pci,host=81:00.0,bus=root.1,addr=00.0,multifunction=on"
@@ -109,7 +110,7 @@ OPTS="$OPTS -drive media=cdrom,file=$ISO_WIN"
 OPTS="$OPTS -drive media=cdrom,file=$ISO_VIRTIO"
 
 # Use the following emulated video device (use none for disabled).
-OPTS="$OPTS -vga qxl"
+OPTS="$OPTS -vga std"
 OPTS="$OPTS -vnc :$VM_ID,password -usbdevice tablet"
 
 # User mode network, with VirtIO NIC
@@ -121,9 +122,22 @@ OPTS="$OPTS -redir tcp:$RDP_PORT::3389"
 # Redirect QEMU's console input and output.
 OPTS="$OPTS -monitor stdio"
 
+# Boot order
+if [ $BOOT_ON_CD -ne 0 ]
+then
+    OPTS="$OPTS -boot once=d"
+fi
+
 
 echo numactl --cpunodebind=$NUMA_MODE screen -S "vm-$VM_ID" -d -m qemu-system-x86_64 $OPTS
-numactl --cpunodebind=$NUMA_MODE screen -S "vm-$VM_ID" -d -m qemu-system-x86_64 $OPTS
+sudo numactl --cpunodebind=$NUMA_MODE screen -S "vm-$VM_ID" -d -m qemu-system-x86_64 $OPTS
+
+LOCAL_IP=$(LC_ALL=C /sbin/ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
+VNC_PORT=$(( 5900 + $VM_ID ))
+echo
+echo "vnc://$LOCAL_IP:$VNC_PORT (change vnc password to enable vnc)"
+echo "rdp://$LOCAL_IP:$RDP_PORT"
+echo
 
 
 exit 0
