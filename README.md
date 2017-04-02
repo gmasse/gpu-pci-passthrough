@@ -11,6 +11,7 @@ Install your server with Ubuntu 16.04 LTS (with Ubuntu default Kernel)
 ```
 # sudo apt-get update
 # sudo apt-get dist-upgrade
+# sudo apt-get install iptables
 ```
 
 ##### ii. Enable firewall
@@ -134,6 +135,7 @@ mkdir /home/vm
 cd /home/vm
 wget 'https://software-download.microsoft.com/pr/Win10_1607_..._x64.iso?t=...' -O Win10_1607_x64.iso
 wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso
+git clone https://github.com/gmasse/gpu-pci-passthrough.git
 ```
 
 ##### EFI
@@ -151,6 +153,13 @@ cp Build/OvmfX64/DEBUG_GCC*/FV/OVMF.fd /home/vm/
 
 
 ## II. First VM boot
+
+Edit vm.sh according to your settings
+
+`# vi /home/vm/gpu-pci-passthrough/vm.sh `
+
+
+Start the VM number 1
 
 `# sh vm.sh 1`
 
