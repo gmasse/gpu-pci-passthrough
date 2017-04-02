@@ -11,6 +11,7 @@ Install your server with Ubuntu 16.04 LTS (with Ubuntu default Kernel)
 ```
 # sudo apt-get update
 # sudo apt-get dist-upgrade
+# sudo apt-get install iptables
 ```
 
 ##### ii. Enable firewall
@@ -90,39 +91,39 @@ In this example, GTX 1080 id is `10de:1b80` and its Audio Controller is `10de:10
 `# sudo lspci -nnk | grep -i nvidia -A2`
 ```
 02:00.0 VGA compatible controller [0300]: NVIDIA Corporation GP104 [GeForce GTX 1080] [10de:1b80] (rev a1)
-	Subsystem: Device [196e:119e]
-	Kernel driver in use: vfio-pci
-	Kernel modules: nvidiafb, nouveau
+    Subsystem: Device [196e:119e]
+    Kernel driver in use: vfio-pci
+    Kernel modules: nvidiafb, nouveau
 02:00.1 Audio device [0403]: NVIDIA Corporation GP104 High Definition Audio Controller [10de:10f0] (rev a1)
-	Subsystem: Device [196e:119e]
-	Kernel driver in use: vfio-pci
+    Subsystem: Device [196e:119e]
+    Kernel driver in use: vfio-pci
 --
 03:00.0 VGA compatible controller [0300]: NVIDIA Corporation GP104 [GeForce GTX 1080] [10de:1b80] (rev a1)
-	Subsystem: NVIDIA Corporation Device [10de:119e]
-	Kernel driver in use: vfio-pci
-	Kernel modules: nvidiafb, nouveau
+    Subsystem: NVIDIA Corporation Device [10de:119e]
+    Kernel driver in use: vfio-pci
+    Kernel modules: nvidiafb, nouveau
 03:00.1 Audio device [0403]: NVIDIA Corporation GP104 High Definition Audio Controller [10de:10f0] (rev a1)
-	Subsystem: NVIDIA Corporation Device [10de:119e]
-	Kernel driver in use: vfio-pci
-	Kernel modules: snd_hda_intel
+    Subsystem: NVIDIA Corporation Device [10de:119e]
+    Kernel driver in use: vfio-pci
+    Kernel modules: snd_hda_intel
 --
 81:00.0 VGA compatible controller [0300]: NVIDIA Corporation GP104 [GeForce GTX 1080] [10de:1b80] (rev a1)
-	Subsystem: NVIDIA Corporation Device [10de:119e]
-	Kernel driver in use: vfio-pci
-	Kernel modules: nvidiafb, nouveau
+    Subsystem: NVIDIA Corporation Device [10de:119e]
+    Kernel driver in use: vfio-pci
+    Kernel modules: nvidiafb, nouveau
 81:00.1 Audio device [0403]: NVIDIA Corporation GP104 High Definition Audio Controller [10de:10f0] (rev a1)
-	Subsystem: NVIDIA Corporation Device [10de:119e]
-	Kernel driver in use: vfio-pci
-	Kernel modules: snd_hda_intel
+    Subsystem: NVIDIA Corporation Device [10de:119e]
+    Kernel driver in use: vfio-pci
+    Kernel modules: snd_hda_intel
 --
 82:00.0 VGA compatible controller [0300]: NVIDIA Corporation GP104 [GeForce GTX 1080] [10de:1b80] (rev a1)
-	Subsystem: NVIDIA Corporation Device [10de:119e]
-	Kernel driver in use: vfio-pci
-	Kernel modules: nvidiafb, nouveau
+    Subsystem: NVIDIA Corporation Device [10de:119e]
+    Kernel driver in use: vfio-pci
+    Kernel modules: nvidiafb, nouveau
 82:00.1 Audio device [0403]: NVIDIA Corporation GP104 High Definition Audio Controller [10de:10f0] (rev a1)
-	Subsystem: NVIDIA Corporation Device [10de:119e]
-	Kernel driver in use: vfio-pci
-	Kernel modules: snd_hda_intel
+    Subsystem: NVIDIA Corporation Device [10de:119e]
+    Kernel driver in use: vfio-pci
+    Kernel modules: snd_hda_intel
 ```
 
 
@@ -134,6 +135,7 @@ mkdir /home/vm
 cd /home/vm
 wget 'https://software-download.microsoft.com/pr/Win10_1607_..._x64.iso?t=...' -O Win10_1607_x64.iso
 wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso
+git clone https://github.com/gmasse/gpu-pci-passthrough.git
 ```
 
 ##### EFI
@@ -152,7 +154,17 @@ cp Build/OvmfX64/DEBUG_GCC*/FV/OVMF.fd /home/vm/
 
 ## II. First VM boot
 
-`# sh vm.sh 1`
+Edit vm.sh according to your settings
+
+`# vi /home/vm/gpu-pci-passthrough/vm.sh `
+
+
+Start the VM number 1
+
+```
+# cd /home/vm
+# sh gpu-pci-passthrough.git/vm.sh 1
+```
 
 `# sudo screen -r vm-1`
 ```
