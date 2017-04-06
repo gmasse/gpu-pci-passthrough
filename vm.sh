@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BRIGE_MODE=0
+BRIDGE_MODE=0
 #BRIDGE_MODE_MAC_LIST=(02:00:00:99:7f:66 02:00:00:38:e5:f9 02:00:00:c6:37:58)
 
 
@@ -125,7 +125,7 @@ if [ $BRIDGE_MODE -ne 0 ]
 then
     MAC=${BRIDGE_MODE_MAC_LIST[$(($VM_ID-1))]}
     OPTS="$OPTS -device virtio-net,mac=$MAC,netdev=vmnic"
-    OPTS="$OPTS -netdev tap,id=vmnic,ifname=tap0,script=no,downscript=no"
+    OPTS="$OPTS -netdev tap,id=vmnic,ifname=tap0"
 else
     OPTS="$OPTS -device virtio-net,netdev=vmnic"
     OPTS="$OPTS -netdev user,id=vmnic"
@@ -150,7 +150,10 @@ echo
 echo "QEMU cmdline: screen -r \"vm-$VM_ID\""
 echo
 echo "vnc://$LOCAL_IP:$VNC_PORT (change vnc password to enable vnc)"
-echo "rdp://$LOCAL_IP:$RDP_PORT"
+if [ $BRIDGE_MODE -eq 0 ]
+then
+    echo "rdp://$LOCAL_IP:$RDP_PORT"
+fi
 echo
 
 
