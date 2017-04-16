@@ -1,9 +1,5 @@
 #!/bin/bash
 
-BRIDGE_MODE=0
-#BRIDGE_MODE_MAC_LIST=(02:00:00:99:7f:66 02:00:00:38:e5:f9 02:00:00:c6:37:58)
-
-
 usage() {
     echo "$0 VM_ID"
     exit 1;
@@ -13,6 +9,17 @@ VM_ID=$1
 if ! [[ $VM_ID =~ ^[0-9]+$ ]]
 then
     usage
+fi
+
+if [ ! -e "/home/vm/vm.conf" ]
+then
+    source "/home/vm/vm.conf"
+    if [ $BRIDGE_MODE -ne 0 ]
+    then
+        echo "Network Bridge mode (TAP mode) enabled"
+    else
+        echo "Network NAT mode (USER mode) enabled"
+    fi
 fi
 
 # Default path
