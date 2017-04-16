@@ -40,7 +40,7 @@ VM="/home/vm/$VM_ID/vm.qcow2"
 EFI="/home/vm/$VM_ID/OVMF_VARS.fd"
 
 # EFI base file
-VMF="/home/vm/OVMF.fd"
+OVMF="/home/vm/OVMF.fd"
 # Windows installation CD (https://www.microsoft.com/fr-fr/software-download/windows10ISO)
 ISO_WIN="/home/vm/Win10_1607_x64.iso"
 # CD is not the first boot device (default behaviour)
