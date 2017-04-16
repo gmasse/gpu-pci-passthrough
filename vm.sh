@@ -10,7 +10,7 @@ if ! [[ $VM_ID =~ ^[0-9]+$ ]]; then
     usage
 fi
 
-if ! [[ -e "/home/vm/vm.conf" ]]; then
+if [[ -e "/home/vm/vm.conf" ]]; then
     source "/home/vm/vm.conf"
     if [[ $BRIDGE_MODE == 1 ]]; then
         echo "Network Bridge mode (TAP mode) enabled"
