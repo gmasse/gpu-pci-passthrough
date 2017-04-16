@@ -6,16 +6,13 @@ usage() {
 }
 
 VM_ID=$1
-if ! [[ $VM_ID =~ ^[0-9]+$ ]]
-then
+if ! [[ $VM_ID =~ ^[0-9]+$ ]]; then
     usage
 fi
 
-if [ ! -e "/home/vm/vm.conf" ]
-then
+if ! [[ -e "/home/vm/vm.conf" ]]; then
     source "/home/vm/vm.conf"
-    if [ $BRIDGE_MODE -ne 0 ]
-    then
+    if [[ $BRIDGE_MODE == 1 ]]; then
         echo "Network Bridge mode (TAP mode) enabled"
     else
         echo "Network NAT mode (USER mode) enabled"
@@ -57,13 +54,13 @@ ISO_VIRTIO="/home/vm/virtio-win.iso"
 
 # Build the image file if needed
 mkdir -p $DIR
-if [ ! -e $VM ]; then
+if ! [[ -e $VM ]]; then
     qemu-img create -f qcow2 $VM 60G
     # First launch, we boot on CD
     BOOT_ON_CD=1
 fi
 # Build the EFI boot file
-if [ ! -e $EFI ]; then
+if ! [[ -e $EFI ]]; then
     cp $OVMF $EFI
 fi
 
@@ -77,7 +74,7 @@ vfiobind() {
     dev="$1"
     vendor=$(cat /sys/bus/pci/devices/$dev/vendor)
     device=$(cat /sys/bus/pci/devices/$dev/device)
-    if [ -e /sys/bus/pci/devices/$dev/driver ]; then
+    if [[ -e /sys/bus/pci/devices/$dev/driver ]]; then
         sudo sh -c "echo $dev > /sys/bus/pci/devices/$dev/driver/unbind"
     fi
     sudo sh -c "echo $vendor $device > /sys/bus/pci/drivers/vfio-pci/new_id"
@@ -128,8 +125,7 @@ OPTS="$OPTS -vga std"
 OPTS="$OPTS -vnc :$VM_ID,password -usbdevice tablet"
 
 # Net: Bridge Mode (aka TAP) or NAT Mode (aka User mode), with VirtIO NIC
-if [ $BRIDGE_MODE -ne 0 ]
-then
+if [[ $BRIDGE_MODE == 1 ]]; then
     MAC=${BRIDGE_MODE_MAC_LIST[$(($VM_ID-1))]}
     OPTS="$OPTS -device virtio-net,mac=$MAC,netdev=vmnic"
     OPTS="$OPTS -netdev tap,id=vmnic,ifname=tap0"
@@ -143,8 +139,7 @@ fi
 OPTS="$OPTS -monitor stdio"
 
 # Boot order
-if [ $BOOT_ON_CD -ne 0 ]
-then
+if [[ $BOOT_ON_CD == 1 ]]; then
     OPTS="$OPTS -boot once=d"
 fi
 
@@ -157,8 +152,7 @@ echo
 echo "QEMU cmdline: screen -r \"vm-$VM_ID\""
 echo
 echo "vnc://$LOCAL_IP:$VNC_PORT (change vnc password to enable vnc)"
-if [ $BRIDGE_MODE -eq 0 ]
-then
+if ! [[ $BRIDGE_MODE == 1 ]]; then
     echo "rdp://$LOCAL_IP:$RDP_PORT"
 fi
 echo
