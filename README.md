@@ -34,7 +34,7 @@ sudo apt-get install iptables-persistent
 
 Append `intel_iommu=on` to `GRUB_CMDLINE_LINUX_DEFAULT` variable:
 
-`GRUB_CMDLINE_LINUX_DEFAULT="[...] intel_iommu=on"`
+`GRUB_CMDLINE_LINUX_DEFAULT="[...] intel_iommu=on ipv6.disable=1"`
 
 ##### iv. loading modules at boot
 `# sudo vi /etc/modules`
@@ -133,7 +133,7 @@ In this example, GTX 1080 id is `10de:1b80` and its Audio Controller is `10de:10
 sudo apt-get install qemu-system-x86-64 numactl
 mkdir /home/vm
 cd /home/vm
-wget 'https://software-download.microsoft.com/pr/Win10_1607_..._x64.iso?t=...' -O Win10_1607_x64.iso
+wget 'https://software-download.microsoft.com/pr/Win10_1607_..._x64.iso?t=...' -O Win10_x64.iso
 wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso
 git clone https://github.com/gmasse/gpu-pci-passthrough.git
 ```

@@ -40,13 +40,13 @@ PCIID_SND=${PCIID_SND_LIST[$(($VM_ID-1))]}
 
 
 # VM files (will be created the first time you launch the script)
-VM="/home/vm/$VM_ID/vm.qcow2"
-EFI="/home/vm/$VM_ID/OVMF_VARS.fd"
+VM="$DIR/vm.qcow2"
+EFI="$DIR/OVMF_VARS.fd"
 
 # EFI base file
 OVMF="/home/vm/OVMF.fd"
 # Windows installation CD (https://www.microsoft.com/fr-fr/software-download/windows10ISO)
-ISO_WIN="/home/vm/Win10_1607_x64.iso"
+ISO_WIN="/home/vm/Win10_x64.iso"
 # CD is not the first boot device (default behaviour)
 BOOT_ON_CD=0
 # VirtIO drivers (https://fedoraproject.org/wiki/Windows_Virtio_Drivers)

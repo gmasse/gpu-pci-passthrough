@@ -52,10 +52,9 @@ Allow all remaining traffic (from and between `tap0`, `tap1`, ...):
 
 `# sudo iptables -A FORWARD -j ACCEPT`
 
-Store the rules permanently:
+Store the rules permanently (you can ignore error concerning ipv6):
 
 `# sudo netfilter-persistent save`
-
 
 ### 4. Reboot
 And verify everything is ok: `# iptables-save`
