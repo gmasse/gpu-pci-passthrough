@@ -40,8 +40,8 @@ PCIID_SND=${PCIID_SND_LIST[$(($VM_ID-1))]}
 
 
 # VM files (will be created the first time you launch the script)
-VM="/home/vm/$VM_ID/vm.qcow2"
-EFI="/home/vm/$VM_ID/OVMF_VARS.fd"
+VM="$DIR/vm.qcow2"
+EFI="$DIR/OVMF_VARS.fd"
 
 # EFI base file
 OVMF="/home/vm/OVMF.fd"
@@ -144,8 +144,8 @@ if [[ $BOOT_ON_CD == 1 ]]; then
 fi
 
 
-echo numactl --cpunodebind=$NUMA_MODE screen -S "vm-$VM_ID" -d -m qemu-system-x86_64 $OPTS
-sudo numactl --cpunodebind=$NUMA_MODE screen -S "vm-$VM_ID" -d -m qemu-system-x86_64 $OPTS
+echo numactl --cpunodebind=$NUMA_MODE screen -S "vm-$VM_ID" -d -m /bin/bash -c "qemu-system-x86_64 $OPTS 2>$DIR/qemu.err"
+sudo numactl --cpunodebind=$NUMA_MODE screen -S "vm-$VM_ID" -d -m /bin/bash -c "qemu-system-x86_64 $OPTS 2>$DIR/qemu.err"
 
 LOCAL_IP=$(LC_ALL=C /sbin/ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
 echo
