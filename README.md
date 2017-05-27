@@ -154,11 +154,6 @@ cp Build/OvmfX64/DEBUG_GCC*/FV/OVMF.fd /home/vm/
 
 ## II. First VM boot
 
-Edit vm.sh according to your settings
-
-`# vi /home/vm/gpu-pci-passthrough/vm.sh `
-
-
 Start the VM number 1
 
 ```

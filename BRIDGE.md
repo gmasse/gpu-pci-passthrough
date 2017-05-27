@@ -62,7 +62,7 @@ And verify everything is ok: `# iptables-save`
 
 
 ## III. Update VM start script
-Copy the startup script if needed: `#sudo cp /home/vm/gpu-pci-passthrough/vm.conf.example /home/vm/vm.conf`
+Copy the startup script if needed: `# sudo cp /home/vm/gpu-pci-passthrough/vm.conf.example /home/vm/vm.conf`
 
 Edit accordingly your configuration: `# sudo vi /home/vm/vm.conf`
 Uncomment and update the VM MAC address list according to your own Virtual MAC:
