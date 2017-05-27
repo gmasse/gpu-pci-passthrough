@@ -46,7 +46,7 @@ EFI="$DIR/OVMF_VARS.fd"
 # EFI base file
 OVMF="/home/vm/OVMF.fd"
 # Windows installation CD (https://www.microsoft.com/fr-fr/software-download/windows10ISO)
-ISO_WIN="/home/vm/Win10_1607_x64.iso"
+ISO_WIN="/home/vm/Win10_x64.iso"
 # CD is not the first boot device (default behaviour)
 BOOT_ON_CD=0
 # VirtIO drivers (https://fedoraproject.org/wiki/Windows_Virtio_Drivers)
