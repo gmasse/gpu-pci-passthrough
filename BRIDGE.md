@@ -52,10 +52,9 @@ Allow all remaining traffic (from and between `tap0`, `tap1`, ...):
 
 `# sudo iptables -A FORWARD -j ACCEPT`
 
-Store the rules permanently:
+Store the rules permanently (you can ignore error concerning ipv6):
 
 `# sudo netfilter-persistent save`
-
 
 ### 4. Reboot
 And verify everything is ok: `# iptables-save`
@@ -63,7 +62,7 @@ And verify everything is ok: `# iptables-save`
 
 
 ## III. Update VM start script
-Copy the startup script if needed: `#sudo cp /home/vm/gpu-pci-passthrough/vm.conf.example /home/vm/vm.conf`
+Copy the startup script if needed: `# sudo cp /home/vm/gpu-pci-passthrough/vm.conf.example /home/vm/vm.conf`
 
 Edit accordingly your configuration: `# sudo vi /home/vm/vm.conf`
 Uncomment and update the VM MAC address list according to your own Virtual MAC:
